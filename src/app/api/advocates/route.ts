@@ -1,4 +1,4 @@
-import { count, ilike, or, sql } from "drizzle-orm";
+import { count, ilike, or, sql, asc, desc } from "drizzle-orm";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
 
@@ -8,6 +8,8 @@ export async function GET(request: Request): Promise<Response> {
   const page: number = parseInt(searchParams.get("page") ?? "1");
   const limit: number = parseInt(searchParams.get("limit") ?? "10");
   const search: string = searchParams.get("search") ?? "";
+  const sortBy: string = searchParams.get("sortBy") ?? "lastName";
+  const sortOrder: string = searchParams.get("sortOrder") ?? "asc";
 
   // set up data query
   let data = db.select().from(advocates);
@@ -36,6 +38,15 @@ export async function GET(request: Request): Promise<Response> {
   const totalPages = Math.ceil(totalCount / limit);
   const hasNextPage = page < totalPages;
   const hasPreviousPage = page > 1;
+
+  // add sort conditions if sortBy and sortOrder are provided
+  if (sortBy) {
+    if (sortOrder === "asc") {
+      data = data.orderBy(asc(advocates[sortBy as keyof typeof advocates]));
+    } else {
+      data = data.orderBy(desc(advocates[sortBy as keyof typeof advocates]));
+    }
+  }
 
   let offset = (page - 1) * limit;
   data = data.offset(offset).limit(limit);
