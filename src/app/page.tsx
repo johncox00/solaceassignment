@@ -11,7 +11,6 @@ export default function Home() {
   const searchParams = useSearchParams();
 
   const [advocates, setAdvocates] = useState<IAdvocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<IAdvocate[]>([]);
 
 
   // Get initial values from URL params or defaults
