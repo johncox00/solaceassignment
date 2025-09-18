@@ -4,15 +4,13 @@ import {
   integer,
   text,
   jsonb,
-  serial,
   timestamp,
   bigint,
   uuid,
 } from "drizzle-orm/pg-core";
 
 const advocates = pgTable("advocates", {
-  id: serial("id").primaryKey(),
-  uuid: uuid("uuid").defaultRandom().notNull(),
+  id: uuid("id").defaultRandom().primaryKey(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   city: text("city").notNull(),

@@ -15,6 +15,20 @@
       "when": 1758216286268,
       "tag": "0001_quick_ser_duncan",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1758226469978,
+      "tag": "0002_fast_the_anarchist",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1758226629990,
+      "tag": "0003_curved_bug",
+      "breakpoints": true
     }
   ]
 }
