@@ -8,6 +8,7 @@ import UpArrowIcon from "./components/upArrow";
 import DownArrowIcon from "./components/downArrow";
 import EmptyState from "./components/emptyState";
 import parsePhoneNumber from 'libphonenumber-js'
+import { LIMITS } from "./components/pagination";
 
 const HEADERS = ["First Name", "Last Name", "City", "Degree", "Specialties", "Years of Experience", "Phone Number"];
 const NO_SORT_HEADERS = ["Specialties", "Phone Number"];
@@ -21,7 +22,10 @@ export default function Home() {
 
   // Get initial values from URL params or defaults
   const page: number = parseInt(searchParams.get("page") || "1");
-  const limit:number = parseInt(searchParams.get("limit") || "10");
+  let limit:number = parseInt(searchParams.get("limit") || "10");
+  limit = limit > 100 ? 100 : limit;
+  limit = limit < 10 ? 10 : limit;
+  limit = LIMITS.includes(limit) ? limit : 10;
   const search: string = searchParams.get("search") || "";
   const sortBy = searchParams.get("sortBy") || "lastName";
   const sortOrder = searchParams.get("sortOrder") || "asc";

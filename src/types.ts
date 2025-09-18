@@ -20,3 +20,6 @@ export interface IAdvocatesResponse {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
 }
+
+export type SortBy = 'firstName' | 'lastName' | 'city' | 'degree' | 'yearsOfExperience';
+export type SortOrder = 'asc' | 'desc';

@@ -13,6 +13,8 @@ interface IPaginationProps {
   hasPreviousPage: boolean;
 };
 
+export const LIMITS = [10, 20, 50, 100];
+
 export default function Pagination ({
   page,
   setNext,
@@ -27,10 +29,9 @@ export default function Pagination ({
   <div className="mt-4">
     <span className="mr-2">Per Page</span>
     <select onChange={(e) => setPer(parseInt(e.target.value))} value={perPage} className="border border-gray-300 rounded-lg p-2 mr-2">
-      <option value="10">10</option>
-      <option value="20">20</option>
-      <option value="50">50</option>
-      <option value="100">100</option>
+      {LIMITS.map((limit) => (
+        <option value={limit} key={limit}>{limit}</option>
+      ))}
     </select>
     <Button onClick={setPrevious} disabled={!hasPreviousPage}>{"<<"}</Button>
     <span className="mr-2 ml-2">{page} of {totalPages}</span>
