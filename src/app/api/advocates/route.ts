@@ -1,15 +1,18 @@
 import { count, ilike, or, sql, asc, desc } from "drizzle-orm";
 import db from "../../../db";
 import { advocates } from "../../../db/schema";
+import { SortBy, SortOrder } from "../../../types";
 
 export async function GET(request: Request): Promise<Response> {
   // set up query params
   const { searchParams } = new URL(request.url);
   const page: number = parseInt(searchParams.get("page") ?? "1");
-  const limit: number = parseInt(searchParams.get("limit") ?? "10");
+  let limit: number = parseInt(searchParams.get("limit") ?? "10");
+  limit = limit > 100 ? 100 : limit;
+  limit = limit < 10 ? 10 : limit;
   const search: string = searchParams.get("search") ?? "";
-  const sortBy: string = searchParams.get("sortBy") ?? "lastName";
-  const sortOrder: string = searchParams.get("sortOrder") ?? "asc";
+  const sortBy: SortBy = (searchParams.get("sortBy") as SortBy) ?? "lastName";
+  const sortOrder: SortOrder = (searchParams.get("sortOrder") as SortOrder) ?? "asc";
 
   // set up data query
   let data = db.select().from(advocates);
@@ -42,9 +45,9 @@ export async function GET(request: Request): Promise<Response> {
   // add sort conditions if sortBy and sortOrder are provided
   if (sortBy) {
     if (sortOrder === "asc") {
-      data = data.orderBy(asc(advocates[sortBy as keyof typeof advocates]));
+      data = data.orderBy(asc(advocates[sortBy]));
     } else {
-      data = data.orderBy(desc(advocates[sortBy as keyof typeof advocates]));
+      data = data.orderBy(desc(advocates[sortBy]));
     }
   }
 
