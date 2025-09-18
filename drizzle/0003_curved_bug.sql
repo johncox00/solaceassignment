@@ -1,0 +1,1 @@
+ALTER TABLE "advocates" RENAME COLUMN "uuid" TO "id";
