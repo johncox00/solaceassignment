@@ -7,10 +7,12 @@ import {
   serial,
   timestamp,
   bigint,
+  uuid,
 } from "drizzle-orm/pg-core";
 
 const advocates = pgTable("advocates", {
   id: serial("id").primaryKey(),
+  uuid: uuid("uuid").defaultRandom().notNull(),
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   city: text("city").notNull(),
