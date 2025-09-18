@@ -1,6 +1,8 @@
 "use client";
 
-interface PaginationProps {
+import Button from "./button";
+
+interface IPaginationProps {
   page: number;
   setNext: () => void;
   setPrevious: () => void;
@@ -20,8 +22,7 @@ export default function Pagination ({
   totalPages,
   hasNextPage,
   hasPreviousPage,
-}: PaginationProps) {
-  const buttonStyle = "text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
+}: IPaginationProps) {
   return (
   <div className="mt-4">
     <span className="mr-2">Per Page</span>
@@ -31,9 +32,9 @@ export default function Pagination ({
       <option value="50">50</option>
       <option value="100">100</option>
     </select>
-    <button onClick={setPrevious} disabled={!hasPreviousPage} className={buttonStyle}>{"<<"}</button>
+    <Button onClick={setPrevious} disabled={!hasPreviousPage}>{"<<"}</Button>
     <span className="mr-2 ml-2">{page} of {totalPages}</span>
-    <button onClick={setNext} disabled={!hasNextPage} className={buttonStyle}>{">>"}</button>
+    <Button onClick={setNext} disabled={!hasNextPage}>{">>"}</Button>
   </div>
 );
 }

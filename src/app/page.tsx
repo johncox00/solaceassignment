@@ -4,23 +4,26 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "./components/pagination";
 import { IAdvocate, IAdvocatesResponse } from "@/types";
+import Button from "./components/button";
 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [advocates, setAdvocates] = useState<IAdvocate[]>([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState<IAdvocate[]>([]);
 
 
   // Get initial values from URL params or defaults
-  const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "10");
+  const page: number = parseInt(searchParams.get("page") || "1");
+  const limit:number = parseInt(searchParams.get("limit") || "10");
+  const search: string = searchParams.get("search") || "";
 
-  const [totalPages, setTotalPages] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(false);
-  const [hasPreviousPage, setHasPreviousPage] = useState(false);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>(search);
 
   // Update URL parameters
   const updateURL = (newParams: Record<string, string | number>) => {
@@ -34,16 +37,21 @@ export default function Home() {
       }
     });
 
+    if (newParams.search !== undefined) {
+      params.set("page", "1");
+    }
+
     router.push(`/?${params.toString()}`, { scroll: false });
   };
   useEffect(() => {
     fetchAdvocates();
-  }, [page, limit]);
+  }, [page, limit, search]);
   
   const fetchAdvocates = () => {
     const urlParams = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
+      search: searchTerm,
     });
 
     fetch(`/api/advocates?${urlParams.toString()}`).then((response: Response) => {
@@ -65,29 +73,29 @@ export default function Home() {
     updateURL({ limit: newLimit });
   };
 
-  const onChange = (e) => {
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
+  const searchAdvoctes = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const q = e.target.value;
+    setSearchTerm(q);
+    if (q === "") {
+      clearSearch();
+    } else {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      setTimer(setTimeout(() => {
+        updateURL({ search: q });
+        setTimer(null);
+      }, 1500));
+    }
   };
 
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+  const clearSearch = () => {
+    if (timer) {
+      clearTimeout(timer);
+      setTimer(null);
+    }
+    setSearchTerm("");
+    updateURL({ search: "" });
   };
 
   return (
@@ -96,12 +104,23 @@ export default function Home() {
       <br />
       <br />
       <div>
-        <p>Search</p>
         <p>
-          Searching for: <span id="search-term"></span>
+          {
+            searchTerm && !timer ?
+              <span>Searching for: {searchTerm} | ({totalCount} results)</span>
+            :
+            <span>Search</span>
+          }
         </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
+        <input style={{ border: "1px solid black" }} onChange={searchAdvoctes} value={searchTerm} />
+        {timer ? 
+          <>
+            <Button onClick={() => clearTimeout(timer)}>Cancel</Button>
+            <span>Searching...</span>
+          </>
+        : 
+          <Button onClick={clearSearch}>Reset</Button>
+        }
         <Pagination 
           setNext={() => setPage(page + 1)} 
           setPrevious={() => setPage(page - 1)} 
