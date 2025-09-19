@@ -43,6 +43,13 @@
       "when": 1758297606595,
       "tag": "0005_indices",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1758298568131,
+      "tag": "0006_needy_hiroim",
+      "breakpoints": true
     }
   ]
 }
