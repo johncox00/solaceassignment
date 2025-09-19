@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<Response> {
 
   // add search conditions if search term is provided
   if (search.trim()) {
-    const searchPattern = `%${search.trim()}%`;
+    const searchPattern = search.trim();
 
     const searchConditions = or(
       ilike(advocates.firstName, `%${searchPattern}%`),
