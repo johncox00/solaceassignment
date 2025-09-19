@@ -36,6 +36,7 @@ export default function Home() {
   const [hasPreviousPage, setHasPreviousPage] = useState<boolean>(false);
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>(search);
+  const [error, setError] = useState<string | null>(null);
 
   // Update URL parameters
   const updateURL = (newParams: Record<string, string | number>) => {
@@ -60,6 +61,7 @@ export default function Home() {
   }, [page, limit, search, sortBy, sortOrder]);
   
   const fetchAdvocates = () => {
+    setError(null);
     const urlParams = new URLSearchParams({
       page: page.toString(),
       limit: limit.toString(),
@@ -75,7 +77,11 @@ export default function Home() {
         setTotalPages(jsonResponse.totalPages);
         setHasNextPage(jsonResponse.hasNextPage);
         setHasPreviousPage(jsonResponse.hasPreviousPage);
+      }).catch((error: Error) => {
+        setError(error.message);
       });
+    }).catch((error: Error) => {
+      setError(error.message);
     });
   };
 
@@ -87,7 +93,7 @@ export default function Home() {
     updateURL({ limit: newLimit });
   };
 
-  const searchAdvoctes = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const searchAdvocates = (e: React.ChangeEvent<HTMLInputElement>) => {
     const q = e.target.value;
     setSearchTerm(q);
     if (q === "") {
@@ -179,7 +185,7 @@ export default function Home() {
             id="search"
             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md border-gray-500 border-4 p-2"
             value={searchTerm}
-            onChange={searchAdvoctes}
+            onChange={searchAdvocates}
           />
           {searchTerm && (
             <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600" onClick={clearSearch}>
@@ -198,6 +204,7 @@ export default function Home() {
           hasNextPage={hasNextPage} 
           hasPreviousPage={hasPreviousPage}
         />
+        {error && <div className="text-red-500">{error}</div>}
       </div>
       <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
         <table className="w-full">

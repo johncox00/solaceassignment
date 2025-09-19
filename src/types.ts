@@ -1,5 +1,5 @@
 export interface IAdvocate {
-  id: number;
+  id: string;
   uuid: string;
   firstName: string;
   lastName: string;
