@@ -36,6 +36,20 @@
       "when": 1758233913662,
       "tag": "0004_nifty_the_initiative",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1758297606595,
+      "tag": "0005_indices",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1758298568131,
+      "tag": "0006_needy_hiroim",
+      "breakpoints": true
     }
   ]
 }
